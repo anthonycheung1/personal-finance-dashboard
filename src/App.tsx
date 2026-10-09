@@ -1,3 +1,7 @@
+import { useState } from 'react';
+
+import type { ETF } from './types/finance';
+
 import {
   etfHoldings,
   properties,
@@ -19,14 +23,17 @@ import { formatCurrency } from './utils/formatters';
 
 import PageLayout from './components/Layout/PageLayout';
 import StatCard from './components/UI/StatCard';
+import ETFTable from './components/UI/ETFTable';
 
 import NetWorthChart from './components/Charts/NetWorthChart';
 import AssetAllocationChart from './components/Charts/AssetAllocationChart';
 import MortgageChart from './components/Charts/MortgageChart';
 
 function App() {
+  const [etfs, setEtfs] = useState<ETF[]>(etfHoldings);
+
   const netWorth = getNetWorth(
-    etfHoldings,
+    etfs,
     properties,
     superAccounts,
     cashAccounts
@@ -34,6 +41,24 @@ function App() {
 
   const mortgagePreview =
     getMortgageAmortisationSchedule(500000, 6, 30);
+
+  const handleAddETF = (newETF: ETF) => {
+    setEtfs((currentETFs) => [...currentETFs, newETF]);
+  };
+
+  const handleUpdateETF = (updatedETF: ETF) => {
+    setEtfs((currentETFs) =>
+      currentETFs.map((etf) =>
+        etf.id === updatedETF.id ? updatedETF : etf
+      )
+    );
+  };
+
+  const handleDeleteETF = (id: number) => {
+    setEtfs((currentETFs) =>
+      currentETFs.filter((etf) => etf.id !== id)
+    );
+  };
 
   return (
     <PageLayout title="Personal Finance Dashboard">
@@ -51,7 +76,7 @@ function App() {
           <StatCard
             title="ETF value"
             value={formatCurrency(
-              getTotalETFValue(etfHoldings)
+              getTotalETFValue(etfs)
             )}
           />
 
@@ -90,7 +115,7 @@ function App() {
         <h2>Asset allocation</h2>
 
         <AssetAllocationChart
-          etfs={etfHoldings}
+          etfs={etfs}
           properties={properties}
           superAccounts={superAccounts}
           cashAccounts={cashAccounts}
@@ -102,6 +127,18 @@ function App() {
         <h2>Mortgage balance preview</h2>
 
         <MortgageChart schedule={mortgagePreview} />
+      </section>
+
+      {/* ETF portfolio */}
+      <section className="dashboard-section">
+        <h2>ETF portfolio</h2>
+
+        <ETFTable
+          etfs={etfs}
+          onAddETF={handleAddETF}
+          onUpdateETF={handleUpdateETF}
+          onDeleteETF={handleDeleteETF}
+        />
       </section>
 
     </PageLayout>
