@@ -5,6 +5,9 @@
   font-synthesis: none;
   text-rendering: optimizeLegibility;
   -webkit-font-smoothing: antialiased;
+  --primary-color: #1f4e79;
+  --border-color: #d9e1f2;
+  --secondary-text-color: #666666;
 }
 
 * {
