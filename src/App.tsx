@@ -7,48 +7,32 @@ import {
 
 import {
   getTotalETFValue,
-  getTotalETFCost,
   getTotalPropertyEquity,
-  getTotalPropertyCashFlow,
   getTotalCash,
   getTotalSuperannuationBalance,
   getNetWorth
 } from './utils/calculations';
 
-import {
-  formatCurrency,
-  formatNumber
-} from './utils/formatters';
+import { formatCurrency } from './utils/formatters';
+import PageLayout from './components/Layout/PageLayout';
+import StatCard from './components/UI/StatCard';
 
 function App() {
-  const totalETFValue = getTotalETFValue(etfHoldings);
-  const totalETFCost = getTotalETFCost(etfHoldings);
-  const totalPropertyEquity = getTotalPropertyEquity(properties);
-  const totalPropertyCashFlow = getTotalPropertyCashFlow(properties);
-  const totalCash = getTotalCash(cashAccounts);
-  const totalSuper = getTotalSuperannuationBalance(superAccounts);
-  const netWorth = getNetWorth(
-    etfHoldings,
-    properties,
-    superAccounts,
-    cashAccounts
-  );
+  const netWorth = getNetWorth(etfHoldings, properties, superAccounts, cashAccounts);
 
   return (
-    <main>
-      <h1>Personal Finance Dashboard</h1>
-      <section>
-        <h2>Portfolio summary</h2>
-        <p>ETF value: {formatCurrency(totalETFValue)}</p>
-        <p>ETF cost: {formatCurrency(totalETFCost)}</p>
-        <p>Property equity: {formatCurrency(totalPropertyEquity)}</p>
-        <p>Property cash flow: {formatCurrency(totalPropertyCashFlow)}</p>
-        <p>Cash: {formatCurrency(totalCash)}</p>
-        <p>Superannuation: {formatCurrency(totalSuper)}</p>
-        <p>Net worth: {formatCurrency(netWorth)}</p>
-        <p>ETF holdings: {formatNumber(etfHoldings.length)}</p>
+    <PageLayout title="Personal Finance Dashboard">
+      <section className="dashboard-section">
+        <h2>Financial overview</h2>
+        <div className="top-level-metrics-grid">
+          <StatCard title="Net worth" value={formatCurrency(netWorth)} />
+          <StatCard title="ETF value" value={formatCurrency(getTotalETFValue(etfHoldings))} />
+          <StatCard title="Property equity" value={formatCurrency(getTotalPropertyEquity(properties))} />
+          <StatCard title="Cash" value={formatCurrency(getTotalCash(cashAccounts))} />
+          <StatCard title="Superannuation" value={formatCurrency(getTotalSuperannuationBalance(superAccounts))} />
+        </div>
       </section>
-    </main>
+    </PageLayout>
   );
 }
 
