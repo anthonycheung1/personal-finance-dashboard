@@ -29,25 +29,12 @@ function MortgageCalculator(props: MortgageCalculatorProps) {
             min="0"
             step="any"
             value={props.principal}
-            onChange={(event) =>
-              props.onPrincipalChange(
-                event.target.value === ''
-                  ? ''
-                  : Number(
-                      event.target.value
-                    )
-              )
-            }
+            onChange={(event) => props.onPrincipalChange(event.target.value === '' ? '' : Number(event.target.value))}
             aria-invalid={Boolean(props.principalError)}
           />
 
           {props.principalError && (
-            <span
-              className="form-error"
-              role="alert"
-            >
-              {props.principalError}
-            </span>
+            <span className="form-error" role="alert">{props.principalError}</span>
           )}
         </label>
 
@@ -59,63 +46,31 @@ function MortgageCalculator(props: MortgageCalculatorProps) {
             min="0"
             step="any"
             value={props.interestRate}
-            onChange={(event) =>
-              props.onInterestRateChange(
-                event.target.value === ''
-                  ? ''
-                  : Number(
-                      event.target.value
-                    )
-              )
-            }
+            onChange={(event) => props.onInterestRateChange(event.target.value === '' ? '' : Number(event.target.value))}
             aria-invalid={Boolean(props.interestRateError)}
           />
 
           {props.interestRateError && (
-            <span
-              className="form-error"
-              role="alert"
-            >
-              {props.interestRateError}
-            </span>
+            <span className="form-error" role="alert">{props.interestRateError}</span>
           )}
         </label>
 
         <label>
           Loan term (years)
 
-          <input
-            type="number"
-            min="1"
-            step="1"
-            value={props.termYears}
-            onChange={(event) =>
-              props.onTermYearsChange(
-                event.target.value === ''
-                  ? ''
-                  : Number(event.target.value)
-              )
+          <input type="number" min="1" step="1" value={props.termYears} onChange={(event) =>
+              props.onTermYearsChange(event.target.value === '' ? '' : Number(event.target.value))
             }
             aria-invalid={Boolean(props.termYearsError)}
           />
 
           {props.termYearsError && (
-            <span
-              className="form-error"
-              role="alert"
-            >
-              {props.termYearsError}
-            </span>
+            <span className="form-error" role="alert">{props.termYearsError}</span>
           )}
         </label>
       </div>
 
-      <button
-        type="submit"
-        className="button button-primary"
-      >
-        Calculate repayments
-      </button>
+      <button type="submit" className="button button-primary">Calculate repayments</button>
     </form>
   );
 }
