@@ -22,6 +22,7 @@ import {
 import { formatCurrency } from './utils/formatters';
 
 import Dashboard from './pages/Dashboard';
+import Mortgage from './pages/Mortgage';
 
 import PageLayout from './components/Layout/PageLayout';
 import StatCard from './components/UI/StatCard';
@@ -73,13 +74,11 @@ function App() {
 
   return (
     <>
-      {/* Dashboard page component */}
+      {/* Dashboard page */}
       <Dashboard etfs={etfs} />
 
       {/* Main financial dashboard */}
       <PageLayout title="Personal Finance Dashboard">
-
-        {/* Financial overview */}
         <section className="dashboard-section">
           <h2>Financial overview</h2>
 
@@ -121,16 +120,11 @@ function App() {
           </div>
         </section>
 
-        {/* Net worth chart */}
         <section className="dashboard-section">
           <h2>Net worth over time</h2>
-
-          <NetWorthChart
-            history={netWorthHistory}
-          />
+          <NetWorthChart history={netWorthHistory} />
         </section>
 
-        {/* Asset allocation chart */}
         <section className="dashboard-section">
           <h2>Asset allocation</h2>
 
@@ -142,16 +136,14 @@ function App() {
           />
         </section>
 
-        {/* Mortgage chart */}
         <section className="dashboard-section">
           <h2>Mortgage balance preview</h2>
-
-          <MortgageChart
-            schedule={mortgagePreview}
-          />
+          <MortgageChart schedule={mortgagePreview} />
         </section>
-
       </PageLayout>
+
+      {/* Mortgage calculator page */}
+      <Mortgage />
 
       {/* ETF portfolio preview */}
       <PageLayout title="Investments preview">
@@ -165,9 +157,7 @@ function App() {
 
       {/* Property portfolio preview */}
       <PageLayout title="Property table preview">
-        <PropertyTable
-          properties={properties}
-        />
+        <PropertyTable properties={properties} />
       </PageLayout>
     </>
   );
