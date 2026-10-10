@@ -23,6 +23,7 @@ import { formatCurrency } from './utils/formatters';
 
 import Dashboard from './pages/Dashboard';
 import Mortgage from './pages/Mortgage';
+import Projections from './pages/Projections';
 
 import PageLayout from './components/Layout/PageLayout';
 import StatCard from './components/UI/StatCard';
@@ -79,6 +80,7 @@ function App() {
 
       {/* Main financial dashboard */}
       <PageLayout title="Personal Finance Dashboard">
+        {/* Financial overview */}
         <section className="dashboard-section">
           <h2>Financial overview</h2>
 
@@ -90,41 +92,34 @@ function App() {
 
             <StatCard
               title="ETF value"
-              value={formatCurrency(
-                getTotalETFValue(etfs)
-              )}
+              value={formatCurrency(getTotalETFValue(etfs))}
             />
 
             <StatCard
               title="Property equity"
-              value={formatCurrency(
-                getTotalPropertyEquity(properties)
-              )}
+              value={formatCurrency(getTotalPropertyEquity(properties))}
             />
 
             <StatCard
               title="Cash"
-              value={formatCurrency(
-                getTotalCash(cashAccounts)
-              )}
+              value={formatCurrency(getTotalCash(cashAccounts))}
             />
 
             <StatCard
               title="Superannuation"
-              value={formatCurrency(
-                getTotalSuperannuationBalance(
-                  superAccounts
-                )
-              )}
+              value={formatCurrency(getTotalSuperannuationBalance(superAccounts))}
             />
           </div>
         </section>
 
+        {/* Net worth chart */}
         <section className="dashboard-section">
           <h2>Net worth over time</h2>
+
           <NetWorthChart history={netWorthHistory} />
         </section>
 
+        {/* Asset allocation chart */}
         <section className="dashboard-section">
           <h2>Asset allocation</h2>
 
@@ -136,14 +131,19 @@ function App() {
           />
         </section>
 
+        {/* Mortgage chart */}
         <section className="dashboard-section">
           <h2>Mortgage balance preview</h2>
+
           <MortgageChart schedule={mortgagePreview} />
         </section>
       </PageLayout>
 
       {/* Mortgage calculator page */}
       <Mortgage />
+
+      {/* Investment projections page */}
+      <Projections etfs={etfs} />
 
       {/* ETF portfolio preview */}
       <PageLayout title="Investments preview">
