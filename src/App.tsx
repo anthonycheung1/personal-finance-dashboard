@@ -24,14 +24,17 @@ import { formatCurrency } from './utils/formatters';
 import PageLayout from './components/Layout/PageLayout';
 import StatCard from './components/UI/StatCard';
 import ETFTable from './components/UI/ETFTable';
+import PropertyTable from './components/UI/PropertyTable';
 
 import NetWorthChart from './components/Charts/NetWorthChart';
 import AssetAllocationChart from './components/Charts/AssetAllocationChart';
 import MortgageChart from './components/Charts/MortgageChart';
 
 function App() {
+  // ETF portfolio state
   const [etfs, setEtfs] = useState<ETF[]>(etfHoldings);
 
+  // Financial calculations
   const netWorth = getNetWorth(
     etfs,
     properties,
@@ -42,23 +45,29 @@ function App() {
   const mortgagePreview =
     getMortgageAmortisationSchedule(500000, 6, 30);
 
-  const handleAddETF = (newETF: ETF) => {
-    setEtfs((currentETFs) => [...currentETFs, newETF]);
-  };
+  // Add an ETF
+  function handleAddETF(newETF: ETF) {
+    setEtfs((currentETFs) => [
+      ...currentETFs,
+      newETF
+    ]);
+  }
 
-  const handleUpdateETF = (updatedETF: ETF) => {
+  // Update an ETF
+  function handleUpdateETF(updatedETF: ETF) {
     setEtfs((currentETFs) =>
       currentETFs.map((etf) =>
         etf.id === updatedETF.id ? updatedETF : etf
       )
     );
-  };
+  }
 
-  const handleDeleteETF = (id: number) => {
+  // Delete an ETF
+  function handleDeleteETF(id: number) {
     setEtfs((currentETFs) =>
       currentETFs.filter((etf) => etf.id !== id)
     );
-  };
+  }
 
   return (
     <PageLayout title="Personal Finance Dashboard">
@@ -107,7 +116,9 @@ function App() {
       <section className="dashboard-section">
         <h2>Net worth over time</h2>
 
-        <NetWorthChart history={netWorthHistory} />
+        <NetWorthChart
+          history={netWorthHistory}
+        />
       </section>
 
       {/* Asset allocation chart */}
@@ -126,7 +137,9 @@ function App() {
       <section className="dashboard-section">
         <h2>Mortgage balance preview</h2>
 
-        <MortgageChart schedule={mortgagePreview} />
+        <MortgageChart
+          schedule={mortgagePreview}
+        />
       </section>
 
       {/* ETF portfolio */}
@@ -138,6 +151,15 @@ function App() {
           onAddETF={handleAddETF}
           onUpdateETF={handleUpdateETF}
           onDeleteETF={handleDeleteETF}
+        />
+      </section>
+
+      {/* Property portfolio */}
+      <section className="dashboard-section">
+        <h2>Property portfolio</h2>
+
+        <PropertyTable
+          properties={properties}
         />
       </section>
 
