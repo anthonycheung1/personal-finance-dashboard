@@ -21,6 +21,8 @@ import {
 
 import { formatCurrency } from './utils/formatters';
 
+import Dashboard from './pages/Dashboard';
+
 import PageLayout from './components/Layout/PageLayout';
 import StatCard from './components/UI/StatCard';
 import ETFTable from './components/UI/ETFTable';
@@ -31,7 +33,7 @@ import AssetAllocationChart from './components/Charts/AssetAllocationChart';
 import MortgageChart from './components/Charts/MortgageChart';
 
 function App() {
-  // ETF portfolio state
+  // Shared ETF portfolio state
   const [etfs, setEtfs] = useState<ETF[]>(etfHoldings);
 
   // Financial calculations
@@ -70,100 +72,104 @@ function App() {
   }
 
   return (
-    <PageLayout title="Personal Finance Dashboard">
+    <>
+      {/* Dashboard page component */}
+      <Dashboard etfs={etfs} />
 
-      {/* Financial overview */}
-      <section className="dashboard-section">
-        <h2>Financial overview</h2>
+      {/* Main financial dashboard */}
+      <PageLayout title="Personal Finance Dashboard">
 
-        <div className="top-level-metrics-grid">
-          <StatCard
-            title="Net worth"
-            value={formatCurrency(netWorth)}
+        {/* Financial overview */}
+        <section className="dashboard-section">
+          <h2>Financial overview</h2>
+
+          <div className="top-level-metrics-grid">
+            <StatCard
+              title="Net worth"
+              value={formatCurrency(netWorth)}
+            />
+
+            <StatCard
+              title="ETF value"
+              value={formatCurrency(
+                getTotalETFValue(etfs)
+              )}
+            />
+
+            <StatCard
+              title="Property equity"
+              value={formatCurrency(
+                getTotalPropertyEquity(properties)
+              )}
+            />
+
+            <StatCard
+              title="Cash"
+              value={formatCurrency(
+                getTotalCash(cashAccounts)
+              )}
+            />
+
+            <StatCard
+              title="Superannuation"
+              value={formatCurrency(
+                getTotalSuperannuationBalance(
+                  superAccounts
+                )
+              )}
+            />
+          </div>
+        </section>
+
+        {/* Net worth chart */}
+        <section className="dashboard-section">
+          <h2>Net worth over time</h2>
+
+          <NetWorthChart
+            history={netWorthHistory}
           />
+        </section>
 
-          <StatCard
-            title="ETF value"
-            value={formatCurrency(
-              getTotalETFValue(etfs)
-            )}
+        {/* Asset allocation chart */}
+        <section className="dashboard-section">
+          <h2>Asset allocation</h2>
+
+          <AssetAllocationChart
+            etfs={etfs}
+            properties={properties}
+            superAccounts={superAccounts}
+            cashAccounts={cashAccounts}
           />
+        </section>
 
-          <StatCard
-            title="Property equity"
-            value={formatCurrency(
-              getTotalPropertyEquity(properties)
-            )}
+        {/* Mortgage chart */}
+        <section className="dashboard-section">
+          <h2>Mortgage balance preview</h2>
+
+          <MortgageChart
+            schedule={mortgagePreview}
           />
+        </section>
 
-          <StatCard
-            title="Cash"
-            value={formatCurrency(
-              getTotalCash(cashAccounts)
-            )}
-          />
+      </PageLayout>
 
-          <StatCard
-            title="Superannuation"
-            value={formatCurrency(
-              getTotalSuperannuationBalance(superAccounts)
-            )}
-          />
-        </div>
-      </section>
-
-      {/* Net worth chart */}
-      <section className="dashboard-section">
-        <h2>Net worth over time</h2>
-
-        <NetWorthChart
-          history={netWorthHistory}
-        />
-      </section>
-
-      {/* Asset allocation chart */}
-      <section className="dashboard-section">
-        <h2>Asset allocation</h2>
-
-        <AssetAllocationChart
-          etfs={etfs}
-          properties={properties}
-          superAccounts={superAccounts}
-          cashAccounts={cashAccounts}
-        />
-      </section>
-
-      {/* Mortgage chart */}
-      <section className="dashboard-section">
-        <h2>Mortgage balance preview</h2>
-
-        <MortgageChart
-          schedule={mortgagePreview}
-        />
-      </section>
-
-      {/* ETF portfolio */}
-      <section className="dashboard-section">
-        <h2>ETF portfolio</h2>
-
+      {/* ETF portfolio preview */}
+      <PageLayout title="Investments preview">
         <ETFTable
           etfs={etfs}
           onAddETF={handleAddETF}
           onUpdateETF={handleUpdateETF}
           onDeleteETF={handleDeleteETF}
         />
-      </section>
+      </PageLayout>
 
-      {/* Property portfolio */}
-      <section className="dashboard-section">
-        <h2>Property portfolio</h2>
-
+      {/* Property portfolio preview */}
+      <PageLayout title="Property table preview">
         <PropertyTable
           properties={properties}
         />
-      </section>
-
-    </PageLayout>
+      </PageLayout>
+    </>
   );
 }
 
