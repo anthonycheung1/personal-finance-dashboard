@@ -118,7 +118,7 @@ function Mortgage() {
                 Show amortisation schedule
               </summary>
 
-              <div className="table-container">
+              <div className="table-container table-container--scrollable">
                 <table>
                   <caption>
                     Monthly mortgage repayments and remaining balance

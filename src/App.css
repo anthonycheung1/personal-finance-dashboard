@@ -1,5 +1,66 @@
+
+/* ------------------------------
+   Theme variables
+------------------------------ */
+
+:root {
+  --background-color: #f5f7fa;
+  --surface-color: #ffffff;
+  --text-color: #222222;
+  --secondary-text-color: #666666;
+  --border-color: #d9d9d9;
+  --hover-color: #f0f2f5;
+  --primary-color: #1f4e79;
+  --primary-hover-color: #163a5c;
+  --input-background-color: #ffffff;
+}
+
+body.dark-mode {
+  --background-color: #121820;
+  --surface-color: #1c2733;
+  --text-color: #f2f4f7;
+  --secondary-text-color: #b8c0c9;
+  --border-color: #3a4652;
+  --hover-color: #273441;
+  --primary-color: #6fa8dc;
+  --primary-hover-color: #8bbce8;
+  --input-background-color: #17212b;
+}
+
+/* ------------------------------
+   Global styles
+------------------------------ */
+
+* {
+  box-sizing: border-box;
+}
+
 #root {
   min-height: 100%;
+}
+
+body {
+  margin: 0;
+  background-color: var(--background-color);
+  color: var(--text-color);
+  font-family: Arial, Helvetica, sans-serif;
+  transition:
+    background-color 0.2s ease,
+    color 0.2s ease;
+}
+
+h1,
+h2,
+h3 {
+  color: var(--text-color);
+}
+
+h2 {
+  margin-top: 0;
+}
+
+section {
+  margin-bottom: 40px;
 }
 
 .app {
@@ -9,6 +70,10 @@
   background: var(--background-color);
   color: var(--text-color);
 }
+
+/* ------------------------------
+   Header and navigation
+------------------------------ */
 
 .site-header {
   background: var(--surface-color);
@@ -50,6 +115,7 @@
   border-radius: 6px;
   color: var(--text-color);
   text-decoration: none;
+  font-weight: 600;
 }
 
 .navigation-links a:hover,
@@ -65,11 +131,16 @@
   background: var(--surface-color);
   color: var(--text-color);
   font-weight: 600;
+  cursor: pointer;
 }
 
 .theme-toggle:hover {
   background: var(--hover-color);
 }
+
+/* ------------------------------
+   Page layout
+------------------------------ */
 
 .page-content {
   width: 100%;
@@ -102,13 +173,17 @@
   font-size: 20px;
 }
 
+/* ------------------------------
+   Dashboard metrics and StatCards
+------------------------------ */
+
 .top-level-metrics-grid {
   display: grid;
   grid-template-columns: repeat(3, minmax(0, 1fr));
   gap: 16px;
 }
 
-/* Total Net Worth always spans the entire row */
+/* Total Net Worth spans the entire row */
 
 .total-net-worth-StatCard {
   grid-column: 1 / -1;
@@ -145,6 +220,10 @@
   line-height: 1.5;
 }
 
+/* ------------------------------
+   Dashboard charts
+------------------------------ */
+
 .dashboard-charts {
   display: grid;
   grid-template-columns: repeat(2, minmax(0, 1fr));
@@ -166,12 +245,23 @@
   min-width: 0;
 }
 
+/* ------------------------------
+   Tables
+------------------------------ */
+
 .table-container {
   width: 100%;
   overflow-x: auto;
   border: 1px solid var(--border-color);
   border-radius: 10px;
   background: var(--surface-color);
+}
+
+/* Scrollable table variant */
+
+.table-container--scrollable {
+  max-height: 250px;
+  overflow: auto;
 }
 
 table {
@@ -203,6 +293,7 @@ th {
 }
 
 td {
+  color: var(--text-color);
   font-size: 14px;
 }
 
@@ -220,6 +311,10 @@ tbody tr:hover {
   gap: 6px;
 }
 
+/* ------------------------------
+   Forms and form fields
+------------------------------ */
+
 .form-card {
   padding: 20px;
   border: 1px solid var(--border-color);
@@ -229,7 +324,6 @@ tbody tr:hover {
 
 .form-card h2 {
   margin: 0 0 18px;
-
   font-size: 19px;
 }
 
@@ -237,7 +331,6 @@ tbody tr:hover {
   display: flex;
   flex-direction: column;
   align-items: flex-start;
-
   gap: 18px;
 }
 
@@ -258,6 +351,18 @@ tbody tr:hover {
   font-weight: 600;
 }
 
+.form-field {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+.form-field label {
+  color: var(--text-color);
+  font-size: 14px;
+  font-weight: 600;
+}
+
 input,
 select,
 textarea {
@@ -268,6 +373,7 @@ textarea {
   border-radius: 7px;
   background: var(--input-background-color);
   color: var(--text-color);
+  font: inherit;
 }
 
 input:focus,
@@ -278,13 +384,23 @@ textarea:focus {
   outline-offset: 1px;
 }
 
+input::placeholder,
+textarea::placeholder {
+  transition: color 0.15s ease;
+}
+
+input:focus::placeholder,
+textarea:focus::placeholder {
+  color: transparent;
+}
+
 .search-field {
   width: min(100%, 340px);
 }
 
 .form-error {
   margin: 0;
-  color: var(--negative-color);
+  color: var(--negative-color, #c62828);
   font-size: 13px;
   font-weight: 500;
 }
@@ -295,6 +411,16 @@ textarea:focus {
   border-radius: 8px;
   color: var(--secondary-text-color);
   line-height: 1.6;
+}
+
+/* ------------------------------
+   Buttons
+------------------------------ */
+
+button {
+  font: inherit;
+  font-weight: 600;
+  cursor: pointer;
 }
 
 .button {
@@ -329,15 +455,24 @@ textarea:focus {
 }
 
 .button-danger {
-  border-color: var(--negative-color);
-
+  border-color: var(--negative-color, #c62828);
   background: transparent;
-  color: var(--negative-color);
+  color: var(--negative-color, #c62828);
 }
 
 .button-danger:hover {
   background: var(--hover-color);
 }
+
+button:focus-visible,
+.button:focus-visible {
+  outline: 2px solid var(--primary-color);
+  outline-offset: 2px;
+}
+
+/* ------------------------------
+   Positive and negative values
+------------------------------ */
 
 .positive {
   color: var(--positive-color);
@@ -348,6 +483,107 @@ textarea:focus {
   color: var(--negative-color);
   font-weight: 600;
 }
+
+/* ------------------------------
+   ETF portfolio
+------------------------------ */
+
+.etf-form {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 20px;
+  margin-bottom: 32px;
+}
+
+.etf-form-actions {
+  grid-column: 1 / -1;
+  display: flex;
+  flex-wrap: wrap;
+  gap: 12px;
+}
+
+/* ------------------------------
+   Mortgage calculator
+------------------------------ */
+
+.mortgage-calculator {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: 24px;
+  padding: 24px;
+  border: 1px solid var(--border-color);
+  border-radius: 12px;
+  background: var(--surface-color);
+}
+
+.mortgage-calculator .form-actions {
+  grid-column: 1 / -1;
+}
+
+.mortgage-result {
+  grid-column: 1 / -1;
+  padding-top: 16px;
+  border-top: 1px solid var(--border-color);
+}
+
+.mortgage-result h3 {
+  margin-bottom: 8px;
+}
+
+.mortgage-result p {
+  margin: 0;
+  font-size: 32px;
+  font-weight: 600;
+  color: var(--primary-color);
+}
+
+/* ------------------------------
+   Mortgage amortisation schedule
+------------------------------ */
+
+.mortgage-amortisation {
+  margin-top: 48px;
+}
+
+.mortgage-amortisation .dashboard-chart-card {
+  width: 100%;
+}
+
+.mortgage-amortisation details {
+  margin-top: 24px;
+}
+
+.mortgage-amortisation summary {
+  color: var(--primary-color);
+  font-weight: 600;
+  cursor: pointer;
+}
+
+.mortgage-amortisation summary:hover {
+  color: var(--primary-hover-color);
+}
+
+/* ------------------------------
+   Property equity projections
+------------------------------ */
+
+.property-equity-projections-grid {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 24px;
+}
+
+.property-equity-projection-card {
+  min-width: 0;
+  padding: 24px;
+  border: 1px solid var(--border-color);
+  border-radius: 12px;
+  background: var(--surface-color);
+}
+
+/* ------------------------------
+   Disclaimer and footer
+------------------------------ */
 
 .disclaimer {
   margin-top: 18px;
@@ -367,6 +603,10 @@ textarea:focus {
 .site-footer p {
   margin: 0;
 }
+
+/* ------------------------------
+   Responsive design
+------------------------------ */
 
 @media (max-width: 1100px) {
   .top-level-metrics-grid {
@@ -394,6 +634,32 @@ textarea:focus {
   .navigation-links {
     order: 3;
     width: 100%;
+  }
+
+  .etf-form {
+    grid-template-columns: 1fr;
+  }
+
+  .mortgage-calculator {
+    grid-template-columns: 1fr;
+    padding: 20px;
+  }
+
+  .mortgage-calculator .form-actions,
+  .mortgage-result {
+    grid-column: 1;
+  }
+
+  .property-equity-projections-grid {
+    grid-template-columns: 1fr;
+  }
+
+  .property-equity-projection-card {
+    padding: 20px;
+  }
+
+  .dashboard-chart-card {
+    padding: 16px;
   }
 }
 
@@ -439,5 +705,9 @@ textarea:focus {
   th,
   td {
     padding: 10px;
+  }
+
+  .property-equity-projection-card {
+    padding: 17px;
   }
 }
