@@ -113,7 +113,7 @@ function Projections(props: ProjectionsProps) {
           Year-by-year projection
         </h2>
 
-        <div className="table-container">
+        <div className="table-container table-container--scrollable">
           <table>
             <caption>
               Illustrative end-of-year portfolio values
