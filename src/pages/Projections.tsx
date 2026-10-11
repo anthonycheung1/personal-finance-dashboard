@@ -1,4 +1,3 @@
-
 import { useState } from 'react';
 
 import type { ETF } from '../types/finance';
@@ -14,16 +13,22 @@ import {
 
 import PageLayout from '../components/Layout/PageLayout';
 import StatCard from '../components/UI/StatCard';
+import ProjectionChart from '../components/Charts/ProjectionChart';
 
 type ProjectionsProps = {
   etfs: ETF[];
 };
 
+// Default projection assumptions.
+const DEFAULT_MONTHLY_CONTRIBUTION = 1000;
+const DEFAULT_ANNUAL_RETURN = 7;
+const DEFAULT_YEARS = 10;
+
 // Use the ETF holdings passed down from App so projections reflect the current portfolio.
 function Projections(props: ProjectionsProps) {
-  const [monthlyContribution, setMonthlyContribution] = useState(1000);
-  const [annualReturn, setAnnualReturn] = useState(7);
-  const [years, setYears] = useState(10);
+  const [monthlyContribution, setMonthlyContribution] = useState(DEFAULT_MONTHLY_CONTRIBUTION);
+  const [annualReturn, setAnnualReturn] = useState(DEFAULT_ANNUAL_RETURN);
+  const [years, setYears] = useState(DEFAULT_YEARS);
 
   const currentPortfolioValue = getTotalETFValue(props.etfs);
 
@@ -47,6 +52,22 @@ function Projections(props: ProjectionsProps) {
 
   const estimatedGrowth = projectedValue - currentPortfolioValue - totalContributions;
 
+  // Include the current portfolio value as the starting point of the chart.
+  const chartProjection = [
+    {
+      year: 0,
+      balance: currentPortfolioValue
+    },
+    ...projection
+  ];
+
+  // Restore all projection assumptions to their default values.
+  function handleReset() {
+    setMonthlyContribution(DEFAULT_MONTHLY_CONTRIBUTION);
+    setAnnualReturn(DEFAULT_ANNUAL_RETURN);
+    setYears(DEFAULT_YEARS);
+  }
+
   return (
     <PageLayout title="Financial Projections">
       <p className="page-intro">
@@ -61,20 +82,123 @@ function Projections(props: ProjectionsProps) {
             <label>
               Monthly contribution (AUD)
 
-              <input type="number" min="0" step="50" value={monthlyContribution} onChange={(event) => setMonthlyContribution(Math.max(0, Number(event.target.value)))} />
+              <input
+                type="number"
+                min="0"
+                max="10000"
+                step="50"
+                value={monthlyContribution}
+                onChange={(event) => {
+                  const value = event.target.value;
+
+                  if (value !== '') {
+                    setMonthlyContribution(
+                      Math.min(10000, Math.max(0, Number(value)))
+                    );
+                  }
+                }}
+              />
+
+              <input
+                type="range"
+                min="0"
+                max="10000"
+                step="50"
+                value={monthlyContribution}
+                onChange={(event) =>
+                  setMonthlyContribution(Number(event.target.value))
+                }
+                aria-label="Monthly contribution slider"
+              />
+
+              <span>
+                {formatCurrency(monthlyContribution)} per month
+              </span>
             </label>
 
             <label>
               Assumed annual return (%)
 
-              <input type="number" min="-99" max="100" step="0.5" value={annualReturn} onChange={(event) => setAnnualReturn(Number(event.target.value))} />
+              <input
+                type="number"
+                min="-99"
+                max="100"
+                step="0.5"
+                value={annualReturn}
+                onChange={(event) => {
+                  const value = event.target.value;
+
+                  if (value !== '') {
+                    setAnnualReturn(
+                      Math.min(100, Math.max(-99, Number(value)))
+                    );
+                  }
+                }}
+              />
+
+              <input
+                type="range"
+                min="-99"
+                max="100"
+                step="0.5"
+                value={annualReturn}
+                onChange={(event) =>
+                  setAnnualReturn(Number(event.target.value))
+                }
+                aria-label="Assumed annual return slider"
+              />
+
+              <span>
+                {formatPercentage(annualReturn)} annual return
+              </span>
             </label>
 
             <label>
               Projection period (years)
 
-              <input type="number" min="1" max="50" step="1" value={years} onChange={(event) => setYears(Math.min(50, Math.max(1, Math.floor(Number(event.target.value)))))} />
+              <input
+                type="number"
+                min="1"
+                max="50"
+                step="1"
+                value={years}
+                onChange={(event) => {
+                  const value = event.target.value;
+
+                  if (value !== '') {
+                    setYears(
+                      Math.min(50, Math.max(1, Math.floor(Number(value))))
+                    );
+                  }
+                }}
+              />
+
+              <input
+                type="range"
+                min="1"
+                max="50"
+                step="1"
+                value={years}
+                onChange={(event) =>
+                  setYears(Number(event.target.value))
+                }
+                aria-label="Projection period slider"
+              />
+
+              <span>
+                {years} {years === 1 ? 'year' : 'years'}
+              </span>
             </label>
+          </div>
+
+          <div className="form-actions">
+            <button
+              type="button"
+              className="button button-secondary"
+              onClick={handleReset}
+            >
+              Reset assumptions
+            </button>
           </div>
         </div>
       </section>
@@ -106,6 +230,21 @@ function Projections(props: ProjectionsProps) {
             subtitle={`Assumed annual return: ${formatPercentage(annualReturn)}`}
           />
         </div>
+      </section>
+
+      <section className="dashboard-section">
+        <h2>
+          Projected ETF portfolio growth
+        </h2>
+
+        <p className="page-intro">
+          Estimated portfolio value at the end of each year, including your current holdings and future contributions.
+        </p>
+
+        <ProjectionChart
+          data={chartProjection}
+          years={years}
+        />
       </section>
 
       <section className="dashboard-section">
