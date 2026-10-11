@@ -108,6 +108,12 @@
   gap: 16px;
 }
 
+/* Total Net Worth always spans the entire row */
+
+.total-net-worth-StatCard {
+  grid-column: 1 / -1;
+}
+
 .stat-card {
   min-width: 0;
   padding: 20px;
