@@ -39,6 +39,7 @@ function Dashboard(props: DashboardProps) {
         <div className="top-level-metrics-grid">
           <StatCard
             title="Total net worth"
+            className='total-net-worth-StatCard stat-card'
             value={formatCurrency(getNetWorth(props.etfs, properties, superAccounts, cashAccounts))}
             subtitle="Investments, property equity, cash and super"
           />
