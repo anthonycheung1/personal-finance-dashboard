@@ -1,165 +1,154 @@
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
+
+import {
+  BrowserRouter,
+  Routes,
+  Route
+} from 'react-router-dom';
+
+import './App.css';
 
 import type { ETF } from './types/finance';
 
-import {
-  etfHoldings,
-  properties,
-  cashAccounts,
-  superAccounts,
-  netWorthHistory
-} from './data/financialData';
+import { etfHoldings } from './data/financialData';
 
-import {
-  getTotalETFValue,
-  getTotalPropertyEquity,
-  getTotalCash,
-  getTotalSuperannuationBalance,
-  getNetWorth,
-  getMortgageAmortisationSchedule
-} from './utils/calculations';
-
-import { formatCurrency } from './utils/formatters';
+import Navigation from './components/UI/Navigation';
 
 import Dashboard from './pages/Dashboard';
+import Investments from './pages/Investments';
+import Properties from './pages/Properties';
 import Mortgage from './pages/Mortgage';
 import Projections from './pages/Projections';
 
-import PageLayout from './components/Layout/PageLayout';
-import StatCard from './components/UI/StatCard';
-import ETFTable from './components/UI/ETFTable';
-import PropertyTable from './components/UI/PropertyTable';
+const etfStorageKey = 'personal-finance-dashboard-etfs';
+const themeStorageKey = 'personal-finance-dashboard-theme';
 
-import NetWorthChart from './components/Charts/NetWorthChart';
-import AssetAllocationChart from './components/Charts/AssetAllocationChart';
-import MortgageChart from './components/Charts/MortgageChart';
+function readSavedETFs(): ETF[] {
+  try {
+    const savedData = localStorage.getItem(etfStorageKey);
+
+    if (!savedData) {
+      return etfHoldings;
+    }
+
+    const parsedData: unknown = JSON.parse(savedData);
+
+    if (!Array.isArray(parsedData)) {
+      return etfHoldings;
+    }
+
+    return parsedData as ETF[];
+  }
+  catch {
+    return etfHoldings;
+  }
+}
+
+function readSavedTheme(): boolean {
+  try {
+    return localStorage.getItem(themeStorageKey) === 'dark';
+  }
+  catch {
+    return false;
+  }
+}
 
 function App() {
-  // Shared ETF portfolio state
-  const [etfs, setEtfs] = useState<ETF[]>(etfHoldings);
+  const [etfs, setEtfs] = useState<ETF[]>(readSavedETFs);
+  const [isDarkMode, setIsDarkMode] = useState(readSavedTheme);
 
-  // Financial calculations
-  const netWorth = getNetWorth(
-    etfs,
-    properties,
-    superAccounts,
-    cashAccounts
-  );
+  useEffect(() => {
+    try {
+      localStorage.setItem(
+        etfStorageKey,
+        JSON.stringify(etfs)
+      );
+    }
+    catch (error) {
+      console.error('Unable to save ETF data:', error);
+    }
+  }, [etfs]);
 
-  const mortgagePreview =
-    getMortgageAmortisationSchedule(500000, 6, 30);
+  useEffect(() => {
+    try {
+      localStorage.setItem(
+        themeStorageKey,
+        isDarkMode ? 'dark' : 'light'
+      );
+    }
+    catch (error) {
+      console.error('Unable to save theme preference:', error);
+    }
 
-  // Add an ETF
-  function handleAddETF(newETF: ETF) {
-    setEtfs((currentETFs) => [
-      ...currentETFs,
-      newETF
-    ]);
+    document.body.classList.toggle('dark-mode', isDarkMode);
+  }, [isDarkMode]);
+
+  function toggleDarkMode() {
+    setIsDarkMode((previousMode) => !previousMode);
   }
 
-  // Update an ETF
-  function handleUpdateETF(updatedETF: ETF) {
-    setEtfs((currentETFs) =>
-      currentETFs.map((etf) =>
-        etf.id === updatedETF.id ? updatedETF : etf
-      )
-    );
+  function addETF(newETF: ETF) {
+    setEtfs((previousETFs) => [...previousETFs, newETF]);
   }
 
-  // Delete an ETF
-  function handleDeleteETF(id: number) {
-    setEtfs((currentETFs) =>
-      currentETFs.filter((etf) => etf.id !== id)
-    );
+  function updateETF(updatedETF: ETF) {
+    setEtfs((previousETFs) => previousETFs.map((etf) => etf.id === updatedETF.id ? updatedETF : etf));
+  }
+
+  function deleteETF(id: number) {
+    setEtfs((previousETFs) => previousETFs.filter((etf) => etf.id !== id));
   }
 
   return (
-    <>
-      {/* Dashboard page */}
-      <Dashboard etfs={etfs} />
+    <BrowserRouter basename="/personal-finance-dashboard">
+      <div className="app">
+        <Navigation isDarkMode={isDarkMode} onToggleDarkMode={toggleDarkMode} />
 
-      {/* Main financial dashboard */}
-      <PageLayout title="Personal Finance Dashboard">
-        {/* Financial overview */}
-        <section className="dashboard-section">
-          <h2>Financial overview</h2>
-
-          <div className="top-level-metrics-grid">
-            <StatCard
-              title="Net worth"
-              value={formatCurrency(netWorth)}
-            />
-
-            <StatCard
-              title="ETF value"
-              value={formatCurrency(getTotalETFValue(etfs))}
-            />
-
-            <StatCard
-              title="Property equity"
-              value={formatCurrency(getTotalPropertyEquity(properties))}
-            />
-
-            <StatCard
-              title="Cash"
-              value={formatCurrency(getTotalCash(cashAccounts))}
-            />
-
-            <StatCard
-              title="Superannuation"
-              value={formatCurrency(getTotalSuperannuationBalance(superAccounts))}
-            />
-          </div>
-        </section>
-
-        {/* Net worth chart */}
-        <section className="dashboard-section">
-          <h2>Net worth over time</h2>
-
-          <NetWorthChart history={netWorthHistory} />
-        </section>
-
-        {/* Asset allocation chart */}
-        <section className="dashboard-section">
-          <h2>Asset allocation</h2>
-
-          <AssetAllocationChart
-            etfs={etfs}
-            properties={properties}
-            superAccounts={superAccounts}
-            cashAccounts={cashAccounts}
+        <Routes>
+          <Route path="/" element={<Dashboard etfs={etfs} />} />
+          <Route path="/investments"
+            element={
+              <Investments
+                etfs={etfs}
+                onAddETF={addETF}
+                onUpdateETF={updateETF}
+                onDeleteETF={deleteETF}
+              />
+            }
           />
-        </section>
 
-        {/* Mortgage chart */}
-        <section className="dashboard-section">
-          <h2>Mortgage balance preview</h2>
+          <Route
+            path="/properties"
+            element={<Properties />}
+          />
 
-          <MortgageChart schedule={mortgagePreview} />
-        </section>
-      </PageLayout>
+          <Route
+            path="/mortgage"
+            element={<Mortgage />}
+          />
 
-      {/* Mortgage calculator page */}
-      <Mortgage />
+          <Route
+            path="/projections"
+            element={<Projections etfs={etfs} />}
+          />
 
-      {/* Investment projections page */}
-      <Projections etfs={etfs} />
+          <Route
+            path="*"
+            element={
+              <main className="page-content">
+                <h1>Page not found</h1>
 
-      {/* ETF portfolio preview */}
-      <PageLayout title="Investments preview">
-        <ETFTable
-          etfs={etfs}
-          onAddETF={handleAddETF}
-          onUpdateETF={handleUpdateETF}
-          onDeleteETF={handleDeleteETF}
-        />
-      </PageLayout>
+                <p>The page you requested does not exist.</p>
+              </main>
+            }
+          />
+        </Routes>
 
-      {/* Property portfolio preview */}
-      <PageLayout title="Property table preview">
-        <PropertyTable properties={properties} />
-      </PageLayout>
-    </>
+        <footer className="site-footer">
+          <p>Personal Finance Dashboard · Illustrative data for demonstration purposes</p>
+        </footer>
+      </div>
+    </BrowserRouter>
   );
 }
 
