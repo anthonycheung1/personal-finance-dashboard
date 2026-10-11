@@ -80,7 +80,7 @@ function ETFTable(props: ETFTableProps) {
           The ETF portfolio is empty.
         </p>
       ) : (
-        <div className="table-container">
+        <div className="table-container table-container--scrollable">
           <table>
             <thead>
               <tr>
@@ -88,9 +88,7 @@ function ETFTable(props: ETFTableProps) {
                 <th scope="col">Name</th>
                 <th scope="col">Units</th>
                 <th scope="col">Current Price</th>
-                <th scope="col">
-                  Average Purchase Price
-                </th>
+                <th scope="col">Average Purchase Price</th>
                 <th scope="col">Total Cost</th>
                 <th scope="col">Current Value</th>
                 <th scope="col">Gain/Loss</th>
@@ -418,6 +416,28 @@ function ETFTable(props: ETFTableProps) {
             className="button button-primary"
           >
             {editingETFid !== null ? 'Update ETF' : 'Add ETF'}
+          </button>
+
+          <button
+            type="button"
+            className="button button-secondary"
+            onClick={() => {
+              setNewETFticker('');
+              setNewETFname('');
+              setNewETFunits('');
+              setNewETFcurrentPrice('');
+              setNewETFaveragePurchasePrice('');
+
+              setEditingETFid(null);
+
+              setEtfTickerError(null);
+              setEtfNameError(null);
+              setEtfUnitsError(null);
+              setEtfCurrentPriceError(null);
+              setEtfAveragePurchasePriceError(null);
+            }}
+          >
+            {editingETFid !== null ? 'Cancel' : 'Reset'}
           </button>
         </div>
       </form>
