@@ -70,7 +70,23 @@ function MortgageCalculator(props: MortgageCalculatorProps) {
         </label>
       </div>
 
-      <button type="submit" className="button button-primary">Calculate repayments</button>
+      <div className="form-actions">
+        <button type="submit" className="button button-primary">
+          Calculate repayments
+        </button>
+
+        <button
+          type="button"
+          className="button button-secondary"
+          onClick={() => {
+            props.onPrincipalChange('');
+            props.onInterestRateChange('');
+            props.onTermYearsChange('');
+          }}
+        >
+          Cancel
+        </button>
+      </div>
     </form>
   );
 }
