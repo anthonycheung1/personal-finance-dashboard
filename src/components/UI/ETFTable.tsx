@@ -109,13 +109,14 @@ function ETFTable(props: ETFTableProps) {
                   <td>{formatCurrency(etf.averagePurchasePrice)}</td>
                   <td>{formatCurrency(getETFTotalCost(etf))}</td>
                   <td>{formatCurrency(getETFCurrentValue(etf))}</td>
-                  <td>{formatCurrency(getETFDollarGainLoss(etf))}</td>
-                  <td>{formatPercentage(getETFPercentageGainLoss(etf))}</td>
+                  <td className={getETFDollarGainLoss(etf) >= 0 ? 'positive' : 'negative'}>{formatCurrency(getETFDollarGainLoss(etf))}</td>
+                  <td className={getETFPercentageGainLoss(etf) >= 0 ? 'positive' : 'negative'}>{formatPercentage(getETFPercentageGainLoss(etf))}</td>
 
                   <td>
                     <div className="table-actions">
                       <button
                         type="button"
+                        className="button button-secondary"
                         onClick={() => {
                           setEditingETFid(etf.id);
                           setNewETFticker(etf.ticker);
@@ -130,6 +131,7 @@ function ETFTable(props: ETFTableProps) {
 
                       <button
                         type="button"
+                        className="button button-danger"
                         onClick={() => {
                           props.onDeleteETF(etf.id);
                         }}
@@ -146,7 +148,7 @@ function ETFTable(props: ETFTableProps) {
       )}
 
       <h3>
-        {editingETFid !== null? 'Edit an ETF' : 'Add an ETF'}
+        {editingETFid !== null ? 'Edit an ETF' : 'Add an ETF'}
       </h3>
 
       <form
@@ -411,7 +413,10 @@ function ETFTable(props: ETFTableProps) {
         </div>
 
         <div className="form-actions">
-          <button type="submit">
+          <button
+            type="submit"
+            className="button button-primary"
+          >
             {editingETFid !== null ? 'Update ETF' : 'Add ETF'}
           </button>
         </div>
