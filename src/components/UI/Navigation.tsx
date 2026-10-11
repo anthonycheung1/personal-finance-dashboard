@@ -13,7 +13,7 @@ function Navigation(props: NavigationProps) {
         aria-label="Main navigation"
       >
         <NavLink to="/" end className="site-title">
-          Finance Dashboard
+          Personal Finance Dashboard
         </NavLink>
 
         <ul className="navigation-links">
